@@ -1,6 +1,7 @@
 import React from "react";
 import img1 from "../assets/1.jpeg";
 import { toast } from "react-hot-toast";
+import { useDispatch } from "react-redux";
 
 // const img1 =
 // "https://www.reliancedigital.in/medias/Apple-MGN63HNA-Laptops-491946461-i-1-1200Wx1200H?context=bWFzdGVyfGltYWdlc3wxNzczNDJ8aW1hZ2UvanBlZ3xpbWFnZXMvaDVhL2gyZC85NDQzMDgzNTgzNTE4LmpwZ3xhYzRiNWIxZGQ2NjNiNWIyYjI0Y2ZkYTZlZWQ3MTFjZTMxYzVmNDBiNmM5Mzk5OTM2OGVkZmExMjMyYjIxNDQ4";
@@ -23,8 +24,11 @@ function Home() {
     },
   ];
 
+  const dispatch = useDispatch();
+  
   const addToCartHandler = (option) => {
-    console.log(option);
+    dispatch({ type: "addToCart", payload: option });
+    dispatch({ type: "calculatePrice" });
     toast.success("Added To Cart");
   };
   return (
@@ -48,7 +52,7 @@ const ProductCard = ({ name, id, price, handler, img }) => {
       <img src={img} alt={name} />
       <p>{name}</p>
       <h4>${price}</h4>
-      <button onClick={() => handler({ name, price, id, Quantity: 1, img })}>
+      <button onClick={() => handler({ name, price, id, qty: 1, img })}>
         Add To Cart
       </button>
     </div>

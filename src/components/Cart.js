@@ -1,25 +1,81 @@
 import React from 'react'
-import {AiFillDelete} from 'react-icons/Ai'
+import {AiFillDelete} from 'react-icons/ai'
+import "../styles/cart.scss"
+import "../styles/mediaquer.scss";
+// import img1 from "../assets/1.jpeg"
+import { useDispatch, useSelector } from 'react-redux';
+
+// const img1 =
+// "https://www.reliancedigital.in/medias/Apple-MGN63HNA-Laptops-491946461-i-1-1200Wx1200H?context=bWFzdGVyfGltYWdlc3wxNzczNDJ8aW1hZ2UvanBlZ3xpbWFnZXMvaDVhL2gyZC85NDQzMDgzNTgzNTE4LmpwZ3xhYzRiNWIxZGQ2NjNiNWIyYjI0Y2ZkYTZlZWQ3MTFjZTMxYzVmNDBiNmM5Mzk5OTM2OGVkZmExMjMyYjIxNDQ4";
+
 
 function Cart() {
+  const {cartItem, subTotal,shippin, tax, total}  =useSelector(state=> state.cart);
+  const dispatch = useDispatch()
+
+  const increament = (id)=>{
+    dispatch({
+        type:"addToCart",
+        payload:{id}
+    });
+    dispatch({type:"calculatePrice"})
+  }
+
+
+  const decreament = (id)=>{
+    dispatch({
+        type:"decreament",
+        payload:id
+    });
+    dispatch({type:"calculatePrice"})
+  }
+
+
+  const deleteHandler = (id)=>{
+    dispatch({
+        type:"delete",
+        payload:id
+    });
+    dispatch({type:"calculatePrice"})
+  }
+
+  
   return (
     <div className='cart'>
-        <main> </main>
+        <main> 
+            {cartItem.length>0? cartItem.map(i=>(
+                <CartItem 
+                img={i.img}
+                name={i.name}
+                price ={i.price}
+                qty ={i.qty} 
+                id={i.id}
+                key={i.id}
+                decreament={decreament}
+                increament={increament}
+                deleteHandler={deleteHandler}
+                />
+            )):"Nothing Add Into Cart Yet"}
 
-            <aside>
-                <h2>SubTotal : ${2000}</h2>
-                <h2>Shipping : ${200}</h2>
-                <h2>Tax : ${20}</h2>
-                <h2>Total : ${1220}</h2>
-            </aside>
+
+        </main>
+
+        <aside>
+            <h2>SubTotal : ${subTotal}</h2>
+            <h2>Shipping : ${shippin}</h2>
+            <h2>Tax : ${tax}</h2>
+            <h2>Total : ${total}</h2>
+        </aside>
        
     </div>
   )
 }
 
-const cartItem = ({img, name, price, qty, decreament, increament, deleteHandler, id})=>{
-    <div className='cart'>
-        <img src={img} alt={item}/>
+const CartItem = ({img, name, price, qty, decreament, increament, deleteHandler, id})=>{
+    return(
+
+        <div className='cartItem' >
+        <img src={img} alt={"Item"}/>
 
         <article>
             <h3>{name}</h3>
@@ -32,7 +88,8 @@ const cartItem = ({img, name, price, qty, decreament, increament, deleteHandler,
             <button onClick={()=> increament(id)}>+</button>
         </div>
 
-        <AiFillDelete/>
+        <AiFillDelete onClick={()=>deleteHandler(id)}/>
     </div>
+        )
 }
 export default Cart
